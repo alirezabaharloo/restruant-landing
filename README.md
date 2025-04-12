@@ -78,21 +78,28 @@ npm run dev
 
 ## 📁 Project Structure
 
-├── frontend/
-│ ├── src/
-│ │ ├── components/
-│ │ ├── context/
-│ │ ├── assets/
-│ │ └── App.jsx
-│ ├── package.json
-│ └── vite.config.js
-├── backend/
-│ ├── core/
-│ │ ├── products/
-│ │ ├── users/
-│ │ └── settings.py
-│ └── requirements.txt
-├── docker/
-│ ├── django/
-│ └── react/
-└── docker-compose.yml
+
+### 📚 Directory Overview
+
+#### Frontend Structure
+- `public/`: Static files and assets
+- `src/`: Source code
+  - `assets/`: Images, icons, and other media
+  - `components/`: React components organized by feature
+  - `context/`: React Context API files
+  - `utils/`: Helper functions and constants
+
+#### Backend Structure
+- `core/`: Main Django project
+  - `products/`: Products app with models and API
+  - `core/`: Project settings and configuration
+
+#### Docker Configuration
+- `docker/`: Dockerfile for each service
+- `docker-compose.yml`: Container orchestration
+
+This structure follows:
+- 🎯 Feature-based organization
+- 📱 Separation of concerns
+- 🔧 Easy maintenance and scalability
+- 📦 Modular component architecture
