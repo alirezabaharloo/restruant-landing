@@ -77,3 +77,22 @@ npm run dev
 ```
 
 ## 📁 Project Structure
+
+├── frontend/
+│ ├── src/
+│ │ ├── components/
+│ │ ├── context/
+│ │ ├── assets/
+│ │ └── App.jsx
+│ ├── package.json
+│ └── vite.config.js
+├── backend/
+│ ├── core/
+│ │ ├── products/
+│ │ ├── users/
+│ │ └── settings.py
+│ └── requirements.txt
+├── docker/
+│ ├── django/
+│ └── react/
+└── docker-compose.yml
