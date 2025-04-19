@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-poppins: "Poppins", sans-serif;
+  --color-red1: #C90000;
+  --color-red2: #D62822;
+  --color-gray1: #323232;
+  --color-gray2: #504F4F;
+  --color-gray3: #7D7C7C;
+  --color-yellow1: #FFC300;
+  --color-yellow2: #FFD429;
+  --color-yellow3: #FFF6A3;
+  --color-white1: #F1F1F1;
+  --color-white2: #FFEAE6;
+  --color-border-white1: #E3E3E3;
+  --color-border-white2: #F1F1F1B2;
+
+  --shadow-button: 0px 10px 17px 0px #7090B033;
+}
+
+body{
+  @apply font-poppins;
+}
+
+@plugin 'tailwind-scrollbar';

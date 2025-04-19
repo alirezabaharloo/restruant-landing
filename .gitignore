@@ -60,3 +60,6 @@ docker-compose.override.yml
 # Database
 postgres_data/
 *.sqlite3
+
+# Others
+*.sh

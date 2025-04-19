@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # Database Service
+  db:
+    container_name: db
+    image: postgres:16
+    environment:
+      POSTGRES_DB: tam-project
+      POSTGRES_USER: tam
+      POSTGRES_PASSWORD: GllWH0hhfpPPfYpZFIP+2hie4w6PHWZgwLSv9ynisx4=
+    ports:
+      - "5432:5432"   # Expose PostgreSQL port
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist database data
+    networks:
+      - restaurant-network
+
+  # Django Backend Service
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./docker/django/Dockerfile
+    ports:
+      - "8000:8000"  # Expose Django development server
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend/core:/app  # Mount backend code for development
+    depends_on:
+      - db  # Ensure database is running before backend
+    networks:
+      - restaurant-network
+    restart: always
+    env_file:
+      - ./backend/core/core/.env
+
+  # React Frontend Service
+  # frontend:
+  #   container_name: frontend
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/react/Dockerfile
+  #   ports:
+  #     - "5173:5173"  # Expose Vite dev server
+  #   volumes:
+  #     - ./frontend:/app  # Mount frontend code for development
+  #     - ./frontend/node_modules:/app/node_modules  # Persist node_modules
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true  # Enable hot reload
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - restaurant-network
+  #   command: npm run dev -- --host 0.0.0.0
+
+# Persistent Volumes
+volumes:
+  postgres_data:  # Volume for PostgreSQL data
+
+# Docker Networks
+networks:
+  restaurant-network:  # Internal network for service communication
