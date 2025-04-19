@@ -1,0 +1,62 @@
+# Development Environment
+.env*
+.vscode/
+.idea/
+*.sublime*
+.DS_Store
+
+# Frontend
+## Dependencies
+/frontend/node_modules/
+/frontend/bower_components/
+
+## Build outputs
+/frontend/build/
+/frontend/dist/
+
+## Logs and debugging
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/frontend/*.log
+/frontend/logs/
+
+## Environment files
+/frontend/.env*
+
+# Backend
+## Python
+*.py[cod]
+__pycache__/
+*.so
+.Python
+*.egg*
+*.egg-info/
+
+## Django
+/backend/media/
+/backend/static/
+/backend/*.log
+/backend/db.sqlite3*
+/backend/local_settings.py
+
+## Virtual Environment
+/backend/venv/
+/backend/.env/
+/backend/.venv/
+
+## Test coverage
+/backend/.coverage
+/backend/htmlcov/
+/backend/.pytest_cache/
+
+## Documentation
+/backend/docs/_build/
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Database
+postgres_data/
+*.sqlite3
