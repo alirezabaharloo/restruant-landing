@@ -5,7 +5,7 @@ import { BasketContext } from '../../context/BasketContext';
 
 export default function BasketProduct({ id, title, price, image_url, itemCount }){
   const { removeFromBasket ,onDecreaseQuantity ,onIncreaseQuantity  } = useContext(BasketContext);
-
+  
   return (
     <>
     <div key={id} className='p-4 flex justify-between items-center gap-4 [&:not(:last-child)]:border-b [&:not(:last-child)]:border-gray-100'>

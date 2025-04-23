@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
 import { removeBasket, updateBasket, clearBasket } from '../fetch/http';
-import { addProductNotif, addProductErrorNotif, checkOutBasketNotif, productExistsNotif } from '../utils/notif';
+import { infoMessageNotif, errorMessageNotif, successMessageNotif } from '../utils/notif';
 
 export const BasketContext = createContext({
   basket: [],
@@ -40,16 +40,16 @@ export const BasketContextProvider = ({ children }) => {
         localStorage.setItem('basket', JSON.stringify(updatedBasket));
 
         // Show add notification
-        addProductNotif(`Added ${itemCount} ${title} to basket!`)
+        successMessageNotif(`Added ${itemCount} ${title} to basket!`)
 
       } else {
         // show product exists notification
-        productExistsNotif(`${title} has already been added to your basket!`)
+        infoMessageNotif(`${title} has already been added to your basket!`)
       }
     } catch (error) {
       console.error('Failed to add product to basket:', error);
       // show error notification
-      addProductErrorNotif('Failed to add product to basket')
+      errorMessageNotif('Failed to add product to basket')
     }
   };
 
@@ -57,14 +57,15 @@ export const BasketContextProvider = ({ children }) => {
     const exists = basket.find(product => product.id === productId);
     if (exists) {
       try {
+
+        // update data in db
+        await removeBasket(productId);
+
         setBasket((prevBasket) => {
           const updatedBasket = prevBasket.filter(product => product.id !== productId);
           localStorage.setItem('basket', JSON.stringify(updatedBasket));
           return updatedBasket
         });
-        
-        // update data in db
-        await removeBasket(productId);
         
       } catch (error) {
         console.error('Failed to remove product from basket:', error);
@@ -113,12 +114,24 @@ export const BasketContextProvider = ({ children }) => {
     })
   }
 
+
+  const clearBasketData = async () => {
+    try {
+      await clearBasket();
+      setBasket([])
+      localStorage.removeItem('basket')
+    } catch (error) {
+      console.error('Failed to clear basket:', error);
+    }
+  }
+
   const contextValue = {
     basket,
     addToBasket,
     removeFromBasket, 
     onDecreaseQuantity,
     onIncreaseQuantity,
+    clearBasketData,
   }
 
   return (

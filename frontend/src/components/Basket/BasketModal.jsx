@@ -23,7 +23,7 @@ export default function BasketModal({ isBasketOpen }) {
       <div className='sm:w-[25rem] w-[21rem] p-[1.3rem] text-white absolute left-[-1.3rem] top-[-2.2rem] h-[2.2rem] bg-red1 rounded-t-[0.7rem] flex items-center justify-between'>
           <p className='font-semibold'>{totalProductCount} item{totalProductCount !== 1 ? 's' : ''}</p>
           <p className='font-semibold'>Your Basket</p>
-        </div>
+      </div>
 
         {/* Basket Content */}
         <div className='max-h-[300px] overflow-y-auto pr-1 pt-2 scrollbar-thin scrollbar-thumb-red-300 scrollbar-track-gray-100 hover:scrollbar-thumb-red-400'>
@@ -41,7 +41,7 @@ export default function BasketModal({ isBasketOpen }) {
               <p className='font-semibold text-gray-800'>
                 Total: <span className='text-red1'>${totalPrice.toFixed(2)}</span>
               </p>
-              <button className='py-2 px-5 rounded-md bg-red1 text-white hover:bg-red-600 transition-colors' onClick={showCheckOut}>
+              <button className='py-2 px-5 rounded-md bg-red1 text-white hover:bg-red-600 transition-all hover:scale-[1.05] active:scale-[0.95]' onClick={showCheckOut}>
                 Checkout
               </button>
             </div>

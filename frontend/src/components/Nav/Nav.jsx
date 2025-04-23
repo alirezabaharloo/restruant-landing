@@ -14,17 +14,12 @@ import CheckOutModal from '../CheckOut/CheckOutModal.jsx'
 export default function Nav() {
   const { basket } = useContext(BasketContext);
   const { showBasket, hideModal, progress } = useContext(CartProgressContext);
+  
 
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
 
   const baseBlackScreenClasses = 'z-[19] transition-opacity duration-300 fixed bg-black invisible opacity-0 w-full inset-0';
   const baseUlClasses = "bg-transparent z-20 transition-all duration-200 ease-in-out lg:items-center lg:gap-[3rem] lg:flex-row lg:flex lg:static lg:text-[1rem] lg:w-fit gap-[1.5rem] text-[1.1rem] justify-start items-center fixed right-[-15rem] top-0 w-[12.5rem] px-[2rem] py-[1.25rem] flex flex-col rounded-[1rem] h-screen lg:h-[initial]";  
-  const baseBlurClasses = 'transition-all duration-300 fixed inset-0 bg-black z-[20] backdrop-blur-lg invisible opacity-0';
-
-
-  const blurClasses = progress === 'basket'
-    ? 'transition-opacity duration-300 fixed inset-0 z-[1] backdrop-blur-sm bg-black/50'
-    : baseBlurClasses;
 
   const ulClasses = isBurgerOpen 
     ? "z-[40] transition-all duration-200 lg:items-center lg:gap-[3rem] lg:flex-row lg:flex lg:static lg:text-[1rem] lg:w-fit gap-[1.5rem] text-[1.1rem] bg-white justify-start items-center fixed right-[0] top-0 w-[15rem] px-[2rem] py-[1.25rem] h-fit flex flex-col rounded-[1rem] h-screen"
@@ -68,7 +63,6 @@ export default function Nav() {
           {/* core modals */}
           <BasketModal isBasketOpen={progress === "basket"} />
           <CheckOutModal isCheckOutOpen={progress === "checkout"} />
-          <span className={blurClasses} onClick={progress === "basket" ? hideModal : showBasket}></span>
         </li>
         <li className="lg:flex hidden w-[80px] py-[0.3rem] rounded-[2rem] bg-white1 text-red1 border-red1 border-[1px] items-center justify-center">
           <a href="#" className='font-medium'>Sign in</a>
