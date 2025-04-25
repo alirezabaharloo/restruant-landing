@@ -161,5 +161,26 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # AUTH_USER_MODEL = 'accounts.User'
 
 
-# cors configurations
-CORS_ALLOW_ALL_ORIGINS = True  
+# settings.py
+
+# CORS settings
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False  # Change this to False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",  # If you're also using CRA
+    # Add production URLs when deploying
+]
+
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",  # If you're also using CRA
+    # Add production URLs when deploying
+]
+
+# Session settings
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_SAMESITE = 'Lax'  # Or 'None' with SECURE=True in production

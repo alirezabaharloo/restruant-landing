@@ -3,12 +3,12 @@ import addToBasketImage  from '../../assets/pics/Shopping Basket (1).png'
 import { useContext, useRef, useState } from 'react'
 import { BasketContext } from '../../context/BasketContext.jsx'
 
-export default function MenuProductChild({ title, id, description, price, image_url, quantity }){
+export default function MenuProductChild({ title, id, description, price, image_url, quantity, has_discount, price_with_discount }){
   const { addToBasket } = useContext(BasketContext)
   const [itemCount, setItemCount] = useState(1);
 
   const handleAddToBasket = () => {
-    addToBasket({ id, title, price, image_url, itemCount, quantity })
+    addToBasket({ id, title, quantity: itemCount })
   }
 
   const decreaseCount = () => {
@@ -22,7 +22,12 @@ export default function MenuProductChild({ title, id, description, price, image_
   return (
     <li className='p-[0.8rem] group border-[1px] border-[#E3E3E3] rounded-[0.8rem]'>
       <div className='flex justify-center items-center relative'>
-        <img src={image_url} alt="" srcset="" />
+        <img src={image_url} alt="" />
+        {has_discount && (
+          <div className='absolute top-0 right-2 bg-red-600 text-white px-2 py-1 rounded-md font-semibold cursor-default hover:scale-[1.05] transition-all duration-200'>
+            {Math.round(100 - ((price_with_discount * 100) / price))}% OFF
+          </div>
+        )}
         <span className='absolute w-full h-[65%] bg-[#FFFDE6] z-[-1] bottom-[-0.5rem] rounded-[0.5rem]'></span>
       </div>
       <div className='mt-[1.5rem]'>
@@ -38,7 +43,16 @@ export default function MenuProductChild({ title, id, description, price, image_
         </div>
       </div>
       <div className='flex justify-between items-center mt-[2rem]'>
-        <span className='text-gray1 text-[1.3rem] font-bold'>{price}$</span>
+        <div className='flex flex-col'>
+          {has_discount ? (
+            <>
+              <span className='text-gray1 text-[1.3rem] font-bold'>{price_with_discount}$</span>
+              <span className='text-gray-400 text-[1rem] line-through'>{price}$</span>
+            </>
+          ) : (
+            <span className='text-gray1 text-[1.3rem] font-bold'>{price}$</span>
+          )}
+        </div>
         <div className="flex items-center gap-2">
         <div className="flex items-center h-[2.5rem] border-2 border-gray-200 rounded-[0.5rem] hover:border-red-400 transition-all duration-300">
           <button 

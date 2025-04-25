@@ -1,7 +1,9 @@
-from typing import Iterable
 from django.db import models
 from django.utils.text import slugify
+from django.contrib.auth import get_user_model
+from rest_framework import serializers
 
+User = get_user_model()
 
 class Category(models.Model):
     name = models.CharField(max_length=250)
@@ -44,20 +46,50 @@ class Product(models.Model):
         return self.price
     
 
-class Basket(models.Model):
-    # information fields
-    title = models.CharField(max_length=250)
-    body = models.TextField()
-    price = models.DecimalField(decimal_places=2, max_digits=10)
-    item_count = models.PositiveBigIntegerField(default=1)
-    quantity = models.PositiveBigIntegerField(default=1)
-    image_url = models.CharField(max_length=400, null=True)
+# order models
+class UserInfo(models.Model):
+    """Model for storing user payment information"""
+    email = models.EmailField(max_length=255)
+    card_number = models.CharField(max_length=16)
+    card_expire_date = models.CharField(max_length=5)
+    card_cvv = models.CharField(max_length=3)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = "User Information"
+        verbose_name_plural = "User Information"
+    
+    def __str__(self):
+        return f"Payment info for {self.email}"
+    
 
-    def save(self, *args, **kwargs) -> None:
-        self.quantity = Product.objects.get(id=self.pk).quantity
-        return super().save(*args, **kwargs)
+
+class Order(models.Model):
+    user_info = models.ForeignKey(UserInfo, on_delete=models.PROTECT, related_name='orders', null=True)
+    created_date = models.DateTimeField(auto_now=True)
+    updated_date = models.DateTimeField(auto_now_add=True)
+
+    def get_total_price(self):
+        return sum((order.get_cost() for order in self.orders.all()))
 
     def __str__(self) -> str:
-        return self.title
-    
-    
+         return f"{self.user_info.email} - {self.created_date}"
+
+class OrderItem(models.Model):
+	order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='orders', null=True)
+	product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='orders')
+	quantity = models.IntegerField(default=1)
+
+	def __str__(self):
+		return str(self.id)
+
+	def get_cost(self):
+		return self.product.price_with_discount() * self.quantity
+
+	def __str__(self):
+		return f"{self.product.title} - {self.quantity}"
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserInfo
+        fields = ['email', 'card_number', 'card_expire_date', 'card_cvv']

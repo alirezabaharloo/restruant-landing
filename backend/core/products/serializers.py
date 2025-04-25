@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from .models import *
 from .session import BasketSession
-from decimal import Decimal
-from .models import Basket
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -34,16 +32,14 @@ class CategorySerializer(serializers.ModelSerializer):
 
     def get_image_url(self, obj):
         return f"http://localhost:8000{obj.image.url}" if obj.image else ''
-    
 
-
-class BasketSerializer(serializers.ModelSerializer):
-
+class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Basket
-        fields = ("id", 'title', 'price', 'image_url', 'item_count', 'quantity')
+        model = UserInfo
+        fields = ['email', 'card_number', 'card_expire_date', 'card_cvv']
 
-    def to_representation(self, instance):
-        rep_data = super().to_representation(instance)
-        rep_data['itemCount'] = rep_data.pop('item_count')
-        return rep_data
+    def create(self, validated_data):
+        user_info = UserInfo.objects.filter(email=validated_data.get('email'))
+        if user_info.exists():
+            return user_info[0]
+        return super().create(validated_data)

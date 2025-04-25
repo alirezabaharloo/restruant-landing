@@ -10,6 +10,7 @@ urlpatterns = [
     path('products/', views.ProductListView.as_view()),
     path('product-categories/', views.ProductCategoryListView.as_view()),
     path('on-sale-products/', views.OnsaleProductsView.as_view()),
-    path('clear-basket/', views.ClearBasket.as_view(), name='clear-basket'),
+    path('clear-basket/', views.ClearBasket.as_view()),
+    path('checkout/', views.OrderView.as_view()),
     path('', include(router.urls)),  # Include the router URLs
 ]

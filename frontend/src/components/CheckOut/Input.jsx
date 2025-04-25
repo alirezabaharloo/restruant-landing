@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { valueFormatation } from "../../utils/validation";
 
 export default function Input({ 
   name, 
@@ -31,25 +32,8 @@ export default function Input({
     }
   };
 
-  const formatValue = (input) => {
-    switch (name) {
-      case 'cardNumber':
-        return input.replace(/\s/g, "").replace(/[a-zA-Z]+/g, "").replace(/(\d{4})/g, "$1 ").trim();
-      case 'expiryDate':
-        let digits = input.replace(/\D+/g, "")
-        if (digits.length <= 2) {
-          return digits
-        }
-        return digits.slice(0, 2) + "/" + digits.slice(2, 4)
-      case 'cvv':
-        return input.replace(/\D/g, "");
-      default:
-        return input;
-    }
-  };
-
   const handleChange = (e) => {
-    const newValue = formatValue(e.target.value);
+    const newValue = valueFormatation(name, e.target.value);
     setValue(newValue);
     if (isTouched) {
       onValidate(name, newValue);

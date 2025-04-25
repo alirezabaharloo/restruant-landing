@@ -9,11 +9,13 @@ export default function BasketModal({ isBasketOpen }) {
   const { showCheckOut } = useContext(CartProgressContext);
 
   const totalPrice = basket.reduce((accumuteValue, currentValue)=>{
-    return (accumuteValue + (currentValue.price * currentValue.itemCount))
+    return (accumuteValue + (
+      (currentValue.has_discount ? currentValue.price_with_discount : currentValue.price)
+       * currentValue.quantity))
   }, 0)
 
   const totalProductCount = basket.reduce((totalProductCount, product) => {
-    return (totalProductCount + product.itemCount)
+    return (totalProductCount + product.quantity)
   }, 0)
 
 
@@ -35,7 +37,7 @@ export default function BasketModal({ isBasketOpen }) {
         </div>
 
         {/* Total / Empty Message */}
-        {totalPrice > 0 ? (
+        {totalProductCount > 0 ? (
           <div className='pt-4 border-t border-gray-300'>
             <div className='px-4 flex justify-between items-center'>
               <p className='font-semibold text-gray-800'>

@@ -3,7 +3,7 @@ import trashImage from '../../assets/pics/trash.svg';
 import { BasketContext } from '../../context/BasketContext';
 
 
-export default function BasketProduct({ id, title, price, image_url, itemCount }){
+export default function BasketProduct({ id, title, price, image_url, quantity, has_discount, price_with_discount }){
   const { removeFromBasket ,onDecreaseQuantity ,onIncreaseQuantity  } = useContext(BasketContext);
   
   return (
@@ -16,7 +16,14 @@ export default function BasketProduct({ id, title, price, image_url, itemCount }
           <div>
             <p className='font-medium text-gray-800'>{title}</p>
             <div className='flex items-center gap-2 mt-1'>
-              <p className='text-sm text-gray-600'>${price}</p>
+              {!has_discount ? (
+                <p className='text-sm text-red-600 font-semibold0'>${price}</p>
+              ) : (
+                <div className='flex gap-[0.5rem]'>
+                  <p className='text-sm text-red-600 font-semibold'>${price_with_discount}</p>
+                  <p className='text-xs text-gray-400 line-through'>${price}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -34,7 +41,7 @@ export default function BasketProduct({ id, title, price, image_url, itemCount }
               className='w-6 h-6 flex items-center justify-center text-gray-600 hover:text-red1 text-base font-semibold'
               onClick={() => onDecreaseQuantity(id)}
             >−</button>
-            <span className='text-sm font-medium text-gray-700 w-5 text-center'>{itemCount}</span>
+            <span className='text-sm font-medium text-gray-700 w-5 text-center'>{quantity}</span>
             <button
               className='w-6 h-6 flex items-center justify-center text-gray-600 hover:text-green-600 text-base font-semibold'
               onClick={() => onIncreaseQuantity(id)}
