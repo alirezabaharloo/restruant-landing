@@ -138,8 +138,6 @@ export async function updateBasketItemQuantity(productId, quantity) {
 
 
 export async function checkOut({email, card_number, card_expire_date, card_cvv}) {
-  console.log({email, card_number, card_expire_date, card_cvv});
-  
   const res = await fetch('http://localhost:8000/checkout/', {
     method: 'POST',
     headers: {
@@ -162,4 +160,16 @@ export async function checkOut({email, card_number, card_expire_date, card_cvv})
   }
 
   return resData;
+}
+
+export async function getOnSaleProducts() {
+  const res = await fetch('http://localhost:8000/on-sale-products/');
+
+  const resData = await res.json();
+
+  if (!res.ok) {
+    showError({resData, errorMessage: "Faild to get on sale products!"});
+  }
+
+  return resData
 }

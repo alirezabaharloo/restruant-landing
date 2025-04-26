@@ -1,6 +1,6 @@
 import starImage from '../../assets/pics/Star 1.png'
-import addToBasketImage  from '../../assets/pics/Shopping Basket (1).png'
-import { useContext, useRef, useState } from 'react'
+import addToBasketImage from '../../assets/pics/Shopping Basket (1).png'
+import { useContext, useState } from 'react'
 import { BasketContext } from '../../context/BasketContext.jsx'
 
 export default function MenuProductChild({ title, id, description, price, image_url, quantity, has_discount, price_with_discount }){
@@ -8,7 +8,11 @@ export default function MenuProductChild({ title, id, description, price, image_
   const [itemCount, setItemCount] = useState(1);
 
   const handleAddToBasket = () => {
-    addToBasket({ id, title, quantity: itemCount })
+    addToBasket({ 
+      id, 
+      title, 
+      quantity: itemCount
+    })
   }
 
   const decreaseCount = () => {
@@ -20,59 +24,113 @@ export default function MenuProductChild({ title, id, description, price, image_
   }
 
   return (
-    <li className='p-[0.8rem] group border-[1px] border-[#E3E3E3] rounded-[0.8rem]'>
-      <div className='flex justify-center items-center relative'>
-        <img src={image_url} alt="" />
-        {has_discount && (
-          <div className='absolute top-0 right-2 bg-red-600 text-white px-2 py-1 rounded-md font-semibold cursor-default hover:scale-[1.05] transition-all duration-200'>
-            {Math.round(100 - ((price_with_discount * 100) / price))}% OFF
-          </div>
-        )}
-        <span className='absolute w-full h-[65%] bg-[#FFFDE6] z-[-1] bottom-[-0.5rem] rounded-[0.5rem]'></span>
+    <li className='
+      p-4 group 
+      border border-gray-200 rounded-xl 
+      hover:shadow-lg hover:border-red-100 
+      transition-all duration-300
+      hover:-translate-y-1
+      bg-gradient-to-br from-white via-red-50 to-white
+    '>
+      <div className='relative group'>
+        <div className='relative overflow-hidden rounded-lg'>
+          <img 
+            src={image_url} 
+            alt={title}
+            className='
+              w-full h-48 object-contain 
+              group-hover:scale-110 
+              transition-transform duration-500
+            ' 
+          />
+          {has_discount && (
+            <div className='
+              absolute top-3 right-3 
+              bg-gradient-to-r from-red-600 to-red-700 
+              text-white px-3 py-1 rounded-full 
+              font-semibold text-sm
+              transform hover:scale-110 
+              transition-all duration-200
+              shadow-lg
+            '>
+              {Math.round(100 - ((price_with_discount * 100) / price))}% OFF
+            </div>
+          )}
+        </div>
+        <div className='
+          absolute bottom-0 left-0 right-0 
+          h-24 bg-gradient-to-t from-white to-transparent
+        '></div>
       </div>
-      <div className='mt-[1.5rem]'>
-        <h6 className='font-semibold text-[1.2rem]'>{title}</h6>   
-        <p className='text-gray2 text-[0.85rem] mt-[0.1rem]'>{description}</p>
-        <div className='mt-[0.5rem] flex items-center gap-[0.15rem]'>
-          <img src={starImage} className='w-[1.25rem]' alt="" />
-          <img src={starImage} className='w-[1.25rem]' alt="" />
-          <img src={starImage} className='w-[1.25rem]' alt="" />
-          <img src={starImage} className='w-[1.25rem]' alt="" />
-          <img src={starImage} className='w-[1.25rem]' alt="" />
-          <span className='text-gray3 font-[0.9rem]'>(5)</span>
+
+      <div className='mt-4 space-y-2'>
+        <h6 className='font-bold text-lg text-gray-800 group-hover:text-red-600 transition-colors'>{title}</h6>   
+        <p className='text-gray-600 text-sm line-clamp-2'>{description}</p>
+        <div className='flex items-center gap-1'>
+          {[...Array(5)].map((_, i) => (
+            <img key={i} src={starImage} className='w-5 h-5' alt="star" />
+          ))}
+          <span className='text-gray-500 text-sm'>(5)</span>
         </div>
       </div>
-      <div className='flex justify-between items-center mt-[2rem]'>
+
+      <div className='mt-6 flex justify-between items-center'>
         <div className='flex flex-col'>
           {has_discount ? (
             <>
-              <span className='text-gray1 text-[1.3rem] font-bold'>{price_with_discount}$</span>
-              <span className='text-gray-400 text-[1rem] line-through'>{price}$</span>
+              <span className='text-red-600 text-xl font-bold'>{price_with_discount}$</span>
+              <span className='text-gray-400 text-sm line-through'>{price}$</span>
             </>
           ) : (
-            <span className='text-gray1 text-[1.3rem] font-bold'>{price}$</span>
+            <span className='text-gray-800 text-xl font-bold'>{price}$</span>
           )}
         </div>
-        <div className="flex items-center gap-2">
-        <div className="flex items-center h-[2.5rem] border-2 border-gray-200 rounded-[0.5rem] hover:border-red-400 transition-all duration-300">
+
+        <div className="flex items-center gap-3">
+          <div className="
+            flex items-center h-10 
+            border-2 border-gray-200 rounded-lg 
+            hover:border-red-400 
+            transition-all duration-300
+            overflow-hidden
+          ">
+            <button 
+              className="
+                px-3 h-full 
+                text-gray-600 hover:text-red-600 
+                hover:bg-gray-50
+                transition-colors
+              "
+              onClick={decreaseCount}
+            >
+              -
+            </button>
+            <span className="w-8 text-center font-medium">
+              {itemCount}
+            </span>
+            <button
+              className="
+                px-3 h-full 
+                text-gray-600 hover:text-red-600 
+                hover:bg-gray-50
+                transition-colors
+              "
+              onClick={increaseCount}
+            >
+              +
+            </button>
+          </div>
+
           <button 
-            className="px-2 text-gray-600 hover:text-red-600 text-lg font-bold"
-            onClick={decreaseCount}
+            className='
+              p-2.5 bg-gradient-to-r from-red-600 to-red-700 rounded-lg 
+              hover:from-red-700 hover:to-red-800 hover:scale-110 
+              transition-all duration-300
+              shadow-md hover:shadow-lg
+            ' 
+            onClick={handleAddToBasket}
           >
-            -
-          </button>
-          <span className="w-[2rem] text-center">
-            {itemCount}
-          </span>
-          <button
-            className="px-2 text-gray-600 hover:text-red-600 text-lg font-bold"
-            onClick={increaseCount}
-          >
-            +
-          </button>
-        </div>
-          <button className='p-[0.5rem] bg-red-600 rounded-[0.5rem] cursor-pointer hover:scale-[1.1] transition-all duration-300' onClick={handleAddToBasket}>
-            <img src={addToBasketImage} className='w-[1.3rem]' alt="" />
+            <img src={addToBasketImage} className='w-5 h-5' alt="Add to basket" />
           </button>
         </div>
       </div>

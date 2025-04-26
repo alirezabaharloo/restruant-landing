@@ -1,5 +1,5 @@
 import { fetchMenuList } from "../../fetch/http";
-import Ul from './Ul.jsx'
+import Ul from '../UI/Ul.jsx'
 import MenuListChild from './MenuListChild.jsx'
 import { useEffect, useState } from "react";
 
