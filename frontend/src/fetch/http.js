@@ -1,4 +1,4 @@
-function getCsrfToken() {
+export function getCsrfToken() {
   // getting csrf token (it is necessary for using drf sessions)
   return document.cookie.split('; ')
     .find(row => row.startsWith('csrftoken='))
@@ -14,33 +14,6 @@ function showError({ resData, errorMessage }){
 }
 
 
-export async function fetchProducts(){
-  const res = await fetch("http://localhost:8000/products/", {
-    credentials: 'include',
-  })
-  const resData = await res.json()  
-
-  if (!res.ok) {
-    showError({ resData, errorMessage: 'not products! error from server!' });
-  }
-
-  return resData
-}
-
-
-export async function fetchMenuList(){
-  const res = await fetch("http://localhost:8000/product-categories/", {
-    credentials: 'include',
-  })
-  const resData = await res.json()
-
-  if (!res.ok) {
-    showError({ resData, errorMessage: 'not products! error from server!' });
-  }
-
-  return resData
-}
-
 export async function fetchBasket() {
   const res = await fetch("http://localhost:8000/basket/", {
     credentials: 'include',
@@ -53,7 +26,7 @@ export async function fetchBasket() {
   if (!res.ok) {
     showError({ resData, errorMessage: 'not basket data! error from server!' });
   }
-
+  
   return resData
 }
 

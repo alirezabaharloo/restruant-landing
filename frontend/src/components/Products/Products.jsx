@@ -1,4 +1,3 @@
-import MenuList from './MenuList.jsx';
 import MenuProduct from './MenuProduct.jsx'
 
 
@@ -12,7 +11,6 @@ export default function Products(){
         </h3> 
         <span className="block w-full h-[9px] absolute bg-[#FFF6A3] bottom-[1rem] z-[-1]"></span>
         </div>
-        <MenuList />
         <MenuProduct />
     </section>
   );

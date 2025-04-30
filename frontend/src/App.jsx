@@ -20,6 +20,7 @@ function App() {
         <IntroduceApp />
         <SearchBox />
         <Footer />
+        {/* special contianer for showing notfications */}
         <ToastContainer />
     </section>
   )

@@ -5,9 +5,28 @@ import Input from './Input.jsx';
 import { BasketContext } from '../../context/BasketContext.jsx';
 import { CartProgressContext } from '../../context/CartProgressContext.jsx';
 import { formValidation } from '../../utils/validation.js';
+import useHttp from '../../hooks/useHttp.jsx';
+import { getCsrfToken } from '../../fetch/http.js';
+import { errorMessageNotif, successMessageNotif } from '../../utils/notif.js';
 
 export default function CheckOutModal({ isCheckOutOpen }) {
-  const { checkOutBasket } = useContext(BasketContext);
+  const { clearBasket } = useContext(BasketContext);
+  const { hideModal } = useContext(CartProgressContext);
+
+  // Initialize useHttp with POST configuration
+  const { sendRequest, isLoading, isError } = useHttp(
+    'http://localhost:8000/checkout/',
+    {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-CSRFToken': getCsrfToken(),
+      },
+    }
+  );
+
   const [formData, setFormData] = useState({
     email: '',
     cardNumber: '',
@@ -21,9 +40,7 @@ export default function CheckOutModal({ isCheckOutOpen }) {
     cardCvv: ''
   });
   const [isFormValid, setIsFormValid] = useState(false);
-  const { hideModal } = useContext(CartProgressContext);
 
-  // Check form validity whenever formData or formErrors change
   useEffect(() => {
     const hasEmptyFields = Object.values(formData).some(value => value === '');
     const hasErrors = Object.values(formErrors).some(error => error !== '');
@@ -31,9 +48,8 @@ export default function CheckOutModal({ isCheckOutOpen }) {
   }, [formData, formErrors]);
 
   const validateForm = (name, value) => {
-    const error = formValidation(name, value)
+    const error = formValidation(name, value);
 
-    // Update form data and errors
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -50,14 +66,28 @@ export default function CheckOutModal({ isCheckOutOpen }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (isFormValid) {
-      const response = checkOutBasket(formData);
-      if (response) {
-        hideModal();
-      }
+    if (!isFormValid || isLoading) return;
+
+    const checkoutData = {
+      email: formData.email,
+      card_number: formData.cardNumber.replace(/\s/g, ""),
+      card_expire_date: formData.cardExpireDate,
+      card_cvv: formData.cardCvv,
+    };
+
+    try {
+      await sendRequest(checkoutData);
+    
+
+      // Success case
+      successMessageNotif('Checkout completed successfully!');
+      clearBasket(); // Clear the basket
+      hideModal(); // Close the modal
+      
+    } catch (error) {
+      errorMessageNotif(error.message || 'Failed to process checkout');
     }
   };
-
 
   return (
     <Modal open={isCheckOutOpen}>
@@ -113,19 +143,27 @@ export default function CheckOutModal({ isCheckOutOpen }) {
 
         <button 
           type="submit"
-          disabled={!isFormValid}
+          disabled={!isFormValid || isLoading}
           className={`w-full font-semibold py-3 rounded-lg 
                    transition-all duration-300 transform 
                    shadow-md flex items-center justify-center gap-2
-                   ${isFormValid
+                   ${isFormValid && !isLoading
                      ? 'bg-blue-500 hover:bg-blue-600 hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg text-white cursor-pointer' 
                      : 'bg-gray-300 cursor-not-allowed text-gray-500'}`}
         >
-          <span>checkout</span>
+          <span>{isLoading ? 'Sending data...' : 'Checkout'}</span>
+          {!isLoading && (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
+          )}
         </button>
+
+        {isError && (
+          <div className="text-red-500 text-sm text-center mt-2">
+            {isError}
+          </div>
+        )}
       </form>
     </Modal>
   );

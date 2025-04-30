@@ -2,10 +2,8 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import { 
   removeBasket, 
   updateBasket, 
-  clearBasket, 
   fetchBasket,
   updateBasketItemQuantity, 
-  checkOut
 } from '../fetch/http';
 import { infoMessageNotif, errorMessageNotif, successMessageNotif } from '../utils/notif';
 import { CartProgressContext } from './CartProgressContext';
@@ -14,7 +12,7 @@ export const BasketContext = createContext({
   basket: [],
   addToBasket: () => [],
   removeFromBasket: () => [], 
-  checkOutBasket: () => [],
+  clearBasket: () => [],
   onDecreaseQuantity: () => [],
   onIncreaseQuantity: () => [],
 });
@@ -60,8 +58,13 @@ export const BasketContextProvider = ({ children }) => {
 
         setBasket(updatedBasket);
         successMessageNotif(`Added ${quantity} ${title} to basket!`);
-      } else {
-        infoMessageNotif(`${title} has already been added to your basket!`);
+      } else {       
+
+        if (await onIncreaseQuantity(exists.id)) {
+          successMessageNotif(`${title} quantity increased!`)
+        }else{
+          errorMessageNotif(`You can't add more than ${exists.max_quantity} ${title} to basket!`);
+        }
       }
     } catch (error) {
       console.error('Failed to add product to basket:', error);
@@ -76,6 +79,7 @@ export const BasketContextProvider = ({ children }) => {
         await removeBasket(productId);
         const updatedBasket = basket.filter(product => product.id !== productId);
         setBasket(updatedBasket);
+        successMessageNotif(`${exists.title} removed from basket!`);
       } catch (error) {
         console.error('Failed to remove product from basket:', error);
         errorMessageNotif('Failed to remove item from basket');
@@ -88,7 +92,7 @@ export const BasketContextProvider = ({ children }) => {
       const product = basket.find(p => p.id === productId);
       if (!product) return;
 
-      if (product.quantity <= 1) return;
+      if (product.quantity <= 1) return false;
 
       const newQuantity = product.quantity - 1;
       await updateBasketItemQuantity(productId, newQuantity);
@@ -116,9 +120,8 @@ export const BasketContextProvider = ({ children }) => {
       if (!product) return;
 
       const newQuantity = product.quantity + 1;
-
-      if (newQuantity >= product.max_quantity) return;
-
+      
+      if (newQuantity > product.max_quantity) return false;
       await updateBasketItemQuantity(productId, newQuantity);
       
       const updatedBasket = basket.map(product => {
@@ -132,28 +135,16 @@ export const BasketContextProvider = ({ children }) => {
       });
       
       setBasket(updatedBasket);
+
+      return true
     } catch (error) {
       console.error('Failed to increase quantity:', error);
       errorMessageNotif('Failed to update quantity');
     }
   };
 
-  const checkOutBasket = async (formData) => {
-    try {
-      await checkOut({
-        email: formData.email,
-        card_number: formData.cardNumber.replace(/\s/g, ""),
-        card_expire_date: formData.cardExpireDate,
-        card_cvv: formData.cardCvv,
-      });
-      setBasket([]);
-      successMessageNotif('Basket cleared successfully');
-      return true
-    } catch (error) {
-      console.error('Failed to checkout basket:', error);
-      errorMessageNotif('Failed to checkout basket');
-      return false
-    }
+  const clearBasket = async () => {
+    setBasket([]);
   };
 
   const contextValue = {
@@ -163,7 +154,7 @@ export const BasketContextProvider = ({ children }) => {
     removeFromBasket, 
     onDecreaseQuantity,
     onIncreaseQuantity,
-    checkOutBasket,
+    clearBasket,
   };
 
   return (

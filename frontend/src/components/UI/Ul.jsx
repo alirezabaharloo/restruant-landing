@@ -1,18 +1,26 @@
-export default function Ul({ component: Component, children, error, isFetching , componentProps, ...props }){
-    return (
-      <section {...props}>
-        {
-          error ? <div className='text-center'>{error}!</div> :
-          isFetching || isFetching === null ? <div className='text-center'>Fetching data...</div> :
-          (
-            children.map((data, index)=>{
-              return (
-                <Component key={data.id} {...data} {...componentProps} />
-              )
-            })
-          )
-        }
-          
-      </section>
-    );
-  }
+import useHttp from '../../hooks/useHttp.jsx';
+
+export default function Ul({ 
+  component: Component, 
+  url, 
+  options, 
+  componentProps, 
+  ...props 
+}) {
+const { isLoading, isError, data } = useHttp(url, options);
+
+return (
+  <section {...props}>
+    {isError && <div className='text-center text-red-500'>{isError}</div>}
+    {isLoading && <div className='text-center'>Fetching data...</div>}
+    {!isLoading && !isError && Array.isArray(data) && data.length > 0 && (
+      data.map((item) => {
+        return <Component key={item.id} {...item} {...componentProps} />
+      })
+    )}
+    {!isLoading && !isError && Array.isArray(data) && data.length === 0 && (
+      <div className='text-center text-gray-500'>No items found.</div>
+    )}
+  </section>
+);
+}

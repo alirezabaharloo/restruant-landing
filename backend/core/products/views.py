@@ -126,6 +126,7 @@ class OrderView(APIView):
 
 class OrderView(APIView):
     def post(self, request):
+        print(request.data)
         # Step 1: Validate and create UserInfo
         user_info_data = {
             'email': request.data.get('email'),
